@@ -13,8 +13,8 @@ module Terraspace::Cloud
       setup_context(options)
     end
 
-    def stage_attrs
-      status = @success ? "success" : "fail"
+    def stage_attrs(success)
+      status = success ? "success" : "fail"
       attrs = {
         status: status,
         kind: @kind,

@@ -2,26 +2,35 @@ module Terraspace::Cloud
   class Plan < Base
     include Terraspace::CLI::Concerns::PlanPath
 
-    def run
-      return unless record?
+    def setup
+      return unless Terraspace.cloud?
+      cani?
 
+      return unless @mod.out_option
+      return if @mod.out_option =~ %r{^/} # not need to create parent dir for copy with absolute path
+
+      name = @mod.out_option.sub("#{Terraspace.root}/",'')
+      dest = "#{@mod.cache_dir}/#{name}"
+      FileUtils.mkdir_p(File.dirname(dest))
+    end
+
+    def create(success)
+      return unless Terraspace.cloud?
+      return unless record?
       build
       folder = Folder.new(@options.merge(type: "plan"))
       upload = folder.upload_data # returns upload record
       result = api.create_plan(
         upload_id: upload['id'],
         stack_uid: upload['stack_id'], # use stack_uid since stack_id is friendly url name
-        plan: stage_attrs,
+        plan: stage_attrs(success),
       )
       url = terraspace_cloud_info(result)
       pr_comment(url)
+      result
     rescue Terraspace::NetworkError => e
       logger.warn "WARN: #{e.class} #{e.message}"
       logger.warn "WARN: Unable to save data to Terraspace cloud"
-    end
-
-    def cani?
-      api.create_plan(cani: 1)
     end
 
     def build
@@ -42,6 +51,11 @@ module Terraspace::Cloud
         json = plan_path.sub('.binary','.json')
         sh "terraform show -json #{plan_path} > #{json}"
       end
+    end
+
+    def cani?
+      return true unless Terraspace.cloud?
+      api.create_plan(cani: 1)
     end
   end
 end
