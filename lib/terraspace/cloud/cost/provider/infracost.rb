@@ -1,7 +1,7 @@
 module Terraspace::Cloud::Cost::Provider
   class Infracost
     extend Memoist
-    include Terraspace::Util::Logging
+    include Terraspace::Util::Popen
 
     def name
       "infracost"
@@ -15,10 +15,13 @@ module Terraspace::Cloud::Cost::Provider
       ]
       commands.each do |command|
         logger.debug "=> #{command}"
-        out = `#{command}`
-        logger.info out
+
+        out = popen(command, filter: "Output saved to ")
+        # out = `#{command}`
+        # logger.info out
         if command.include?(".text")
           logger.info IO.read("#{output_dir}/cost.text")
+          logger.info "\n"
         end
       end
     end

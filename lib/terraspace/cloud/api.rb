@@ -33,8 +33,6 @@ module Terraspace::Cloud
     # record_attrs: {upload_id: "upload-nRPSpyWd65Ps6978", stack_id: '...'}
     def create_cost(data)
       path = "#{stack_path}/costs"
-      # puts "create_cost path #{path}"
-      puts "\ncreate_cost data #{data}"
       post("#{stack_path}/costs", data.merge(@options))
     end
   end
