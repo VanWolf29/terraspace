@@ -17,7 +17,7 @@ module Terraspace::Cloud
     def create(success)
       return unless Terraspace.cloud?
       return unless record?
-      build
+      build(success)
       folder = Folder.new(@options.merge(type: "plan"))
       upload = folder.upload_data # returns upload record
       plan = api.create_plan(
@@ -32,7 +32,7 @@ module Terraspace::Cloud
       logger.warn "WARN: Unable to save data to Terraspace cloud"
     end
 
-    def build
+    def build(success)
       clean_cache2_stage
       # .terraspace-cache/dev/stacks/demo
       Dir.chdir(@mod.cache_dir) do
@@ -40,7 +40,7 @@ module Terraspace::Cloud
 
         IO.write("#{plan_dir}/plan.log", Terraspace::Logger.logs)
 
-        return unless @success
+        return unless success
         return if File.empty?(plan_path)
 
         out_option_root_path = "#{Terraspace.root}/#{plan_path}"

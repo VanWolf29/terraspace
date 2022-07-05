@@ -16,9 +16,7 @@ module Terraspace::Cloud::Cost::Provider
       commands.each do |command|
         logger.debug "=> #{command}"
 
-        out = popen(command, filter: "Output saved to ")
-        # out = `#{command}`
-        # logger.info out
+        popen(command, filter: "Output saved to ")
         if command.include?(".text")
           logger.info IO.read("#{output_dir}/cost.text")
           logger.info "\n"

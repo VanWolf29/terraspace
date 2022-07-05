@@ -9,7 +9,6 @@ module Terraspace::Cloud
       super
       @cani = options[:cani]
       @kind = options[:kind]
-      @success = options[:success]
       setup_context(options)
     end
 
