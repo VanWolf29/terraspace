@@ -8,15 +8,12 @@ module Terraspace::Cloud
       build
       folder = Folder.new(@options.merge(type: "cost"))
       upload = folder.upload_data # returns upload record
-      result = api.create_cost(
+      api.create_cost(
         upload_id: upload['id'],
         stack_uid: upload['stack_id'], # use stack_uid since stack_id is friendly url name
         uid: uid,
         cost: cost_attrs,
       )
-      puts "cost result"
-      pp result
-      # url = terraspace_cloud_info(result)
     rescue Terraspace::NetworkError => e
       logger.warn "WARN: #{e.class} #{e.message}"
       logger.warn "WARN: Unable to save data to Terraspace cloud"

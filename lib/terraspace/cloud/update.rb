@@ -7,14 +7,13 @@ module Terraspace::Cloud
       build(success)
       folder = Folder.new(@options.merge(type: @kind))
       upload = folder.upload_data # returns upload record
-      result = api.create_update(
+      update = api.create_update(
         upload_id: upload['id'],
         stack_uid: upload['stack_id'], # use stack_uid since stack_id is friendly url name
         update: stage_attrs(success),
       )
-      url = terraspace_cloud_info(result)
-      pr_comment(url)
-      result
+      pr_comment(update['data']['attributes']['url'])
+      update
     end
 
     def build(success)

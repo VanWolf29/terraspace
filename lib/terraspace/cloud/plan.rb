@@ -20,14 +20,13 @@ module Terraspace::Cloud
       build
       folder = Folder.new(@options.merge(type: "plan"))
       upload = folder.upload_data # returns upload record
-      result = api.create_plan(
+      plan = api.create_plan(
         upload_id: upload['id'],
         stack_uid: upload['stack_id'], # use stack_uid since stack_id is friendly url name
         plan: stage_attrs(success),
       )
-      url = terraspace_cloud_info(result)
-      pr_comment(url)
-      result
+      pr_comment(plan['data']['attributes']['url'])
+      plan
     rescue Terraspace::NetworkError => e
       logger.warn "WARN: #{e.class} #{e.message}"
       logger.warn "WARN: Unable to save data to Terraspace cloud"

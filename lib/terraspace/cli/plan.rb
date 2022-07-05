@@ -7,6 +7,7 @@ class Terraspace::CLI
       success = plan_only
       plan = cloud_plan.create(success)
       cloud_cost.create(uid: plan['data']['id'])
+      logger.info "Terraspace Cloud #{plan['data']['attributes']['url']}"
       unless success
         logger.error commander.error_message.color(:red)
         exit 1

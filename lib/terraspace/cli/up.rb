@@ -39,6 +39,7 @@ class Terraspace::CLI
     def create_cloud_records(success)
       update = cloud_update.create(success)
       cloud_cost.create(uid: update['data']['id'])
+      logger.info "Terraspace Cloud #{update['data']['attributes']['url']}"
     end
 
     def cloud_update

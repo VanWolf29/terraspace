@@ -86,12 +86,5 @@ module Terraspace::Cloud
         line.include?(' cancelled')
       end
     end
-
-    def terraspace_cloud_info(result)
-      data = result['data']
-      url = data['attributes']['url']
-      logger.info "Terraspace Cloud #{url}"
-      url
-    end
   end
 end
